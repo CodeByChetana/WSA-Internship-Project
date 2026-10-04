@@ -3,7 +3,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
-import crypto from "node:crypto"
+import crypto from "node:crypto";
 
 const userSchema=new mongoose.Schema(
     {
@@ -32,7 +32,7 @@ const userSchema=new mongoose.Schema(
             required:[true,"Please confirm your password"],
             validate:{
                 validator:function(el){
-                    return el === this.password
+                    return el === this.get('password');
                 },
                 message:"Password are not the same !"
             }
@@ -61,16 +61,16 @@ const userSchema=new mongoose.Schema(
             index:true
         },
         PasswordResetExpires:{
-            type:String,
+            type:Date,
             select:false,
         },
 
     },
     {timestamps:true}
-)
+);
 //settings to not pass in response from server
 userSchema.set("toJSON",{
-    transforms:function(doc,ret){
+    transform:function(doc,ret){
         delete ret.password;
         delete ret.passwordConfirm;
         delete ret.passwordResetToken;
@@ -78,20 +78,20 @@ userSchema.set("toJSON",{
         delete ret.__v;
         return ret;
     }
-})
+});
 
 //password logic - Hashing
-userSchema.pre("save",async function(next){
-    if(!this.isModified("password")) return next();
+userSchema.pre("save",async function(){
+    if(!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password,12)
-    this.passwordConfirm = undefined
-    next();
-})
+    this.passwordConfirm = undefined;
+    
+});
 //logic check
 //test123 === e32weuhr23yruye947iqwjjgb
 userSchema.methods.correctPassword = async function(candidatePassword,userPassword) {
     return await bcrypt.compare(candidatePassword,userPassword)  
-}
+};
 
 //
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
@@ -100,10 +100,10 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
             this.passwordChangedAt.getTime()/1000,
             10
         );
-        return JWTTimestamp < changedTimeStamp
+        return JWTTimestamp < changedTimeStamp;
     }
     return false;
-}
+};
 
 //forgot password
 userSchema.methods.createPasswordResetToken = function(){
@@ -114,7 +114,7 @@ userSchema.methods.createPasswordResetToken = function(){
 
     this.PasswordResetExpires = Date.now() +10 *60 *1000;
     return resetToken;
-}
+};
 
 const User = mongoose.model("User",userSchema);
 //in mongodb : users

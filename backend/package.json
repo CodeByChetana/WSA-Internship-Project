@@ -17,7 +17,12 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "imagekit": "^6.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "mailgen": "^2.0.36",
     "mongoose": "^9.10.1",
+    "nodemailer": "^10.0.10",
+    "slugify": "^1.6.9",
     "validator": "^13.15.35"
   }
 }

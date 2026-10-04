@@ -2,8 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import {router} from "./routes/userRoutes.js";
+import { propertyRouter } from "./routes/propertyRouter.js";
 
 import connectDB from "./utils/db.js";
+
 dotenv.config();
 
 const app = express();
@@ -23,6 +26,9 @@ const PORT=process.env.PORT;
 app.get("/",(req,res)=>{
     res.send("HomelyHub srever is running")
 })
+
+app.use("/api/v1/rent/user",router)
+app.use("/api/v1/rent/listing",propertyRouter)
 
 connectDB();
 
