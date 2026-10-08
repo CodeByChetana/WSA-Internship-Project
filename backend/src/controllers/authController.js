@@ -60,12 +60,34 @@ const protect = async(req,res,next)=>{
              req.headers.authorization.startsWith("Bearer")
         ){
             token=req.headers.authorization.split("")[1]
-        }else if(req.cookies.jwt && req.cookies.jwt !=='loggedout')
+        }else if(req.cookies.jwt && req.cookies.jwt !=='loggedout'){
             token=req.cookies.jwt;
+        }
+
+        //step2:no token so stop here
+        if(!token){
+            throw new Error("You are not logged in! Please log in to get access")
+        }
+        
+        //step3:verify token
+        const decoded = jwt.verify(token,process.env.JWT_SECRET)
+        //step4:check if user still exists
+        const currentUser = await User.findById(decoded.id);
+        if(!currentUser){
+            throw new Error("The user belonging to this token does no longer exist")
+        };
+        //step5:check if user changed password after the token was issued
+        if(currentUser.changedPasswordAfter(decoded.iat)){
+            throw new Error("User recently changed password! Please log in again")
+        }
+        //grant access to protected route
+        req.user = currentUser;
+        next();
     }
     catch(error){
+        res.status(401).json({status:"fail", message:error.message})
 
     }
 }
 
-export {signup,login};
+export {signup,login,protect};
