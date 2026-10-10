@@ -44,13 +44,13 @@ const bookingSchema = new mongoose.Schema({
 }
 );
 
-bookingSchema.pre(/^find/,function(next){
-    this.populate("user" .populate({
+bookingSchema.pre(/^find/,function(){
+    this.populate("user");
+    this.populate({
         path:property,
         select:"maximum guest images propertyName address"
-    }));
-    next();
-});
+    });
+})
 
 const Booking = mongoose.model("Booking",bookingSchema);
 export {Booking};
