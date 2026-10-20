@@ -16,7 +16,7 @@ const getProperties = async(req,res)=>{
         res.status(200).json({
             status:"success",
             no_of_responses:allProperties.length,
-            date:allProperties
+            data:allProperties
         });
         
     }catch(error){

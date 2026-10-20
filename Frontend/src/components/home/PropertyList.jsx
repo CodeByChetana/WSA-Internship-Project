@@ -2,11 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import "../../css/Home.css";
-import {
-  STATIC_PROPERTIES,
-  STATIC_TOTAL_PROPERTIES,
-} from "../../data/staticData";
 
+import {useDispatch, useSelector} from 'react-redux';
+import {propertyActions} from '../../store/Property/property-slice';  
+import {getAllProperties} from '../../store/Property/property-action';
 const Card = ({ id, image, name, address, price }) => {
   return (
     <figure className="property">
@@ -34,20 +33,23 @@ const Card = ({ id, image, name, address, price }) => {
 };
 
 const PropertyList = () => {
-  const [currentPage, setCurrentPage] = useState({ page: 1 });
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // STATIC: was `useSelector((state) => state.properties)`.
-  // TODO: replace with your own fetch logic.
-  const [properties] = useState(STATIC_PROPERTIES);
-  const [totalProperties] = useState(STATIC_TOTAL_PROPERTIES);
-
+  const dispatch = useDispatch();
+  const { properties, totalProperties } = useSelector(
+    (state) => state.properties
+  );
   const lastPage = Math.ceil(totalProperties / 12);
 
   const propertyListRef = useRef(null);
 
   useEffect(() => {
-    // TODO: fetch the properties for `currentPage` here and set them above.
-  }, [currentPage]);
+    const fetchProperties = async (page) => {
+      dispatch(propertyActions.updateSearchParams(page));
+      dispatch(getAllProperties());
+    };
+    fetchProperties(currentPage);
+  }, [currentPage, dispatch]);
 
   useEffect(() => {
     if (propertyListRef.current) {
@@ -88,16 +90,16 @@ const PropertyList = () => {
       <div className="pagination">
         <button
           className="previous_btn"
-          onClick={() => setCurrentPage((prev) => ({ page: prev.page - 1 }))}
-          disabled={currentPage.page === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          disabled={currentPage === 1}
         >
           <span className="material-symbols-outlined">arrow_back_ios_new</span>
         </button>
 
         <button
           className="next_btn"
-          onClick={() => setCurrentPage((prev) => ({ page: prev.page + 1 }))}
-          disabled={properties.length < 12 || currentPage.page === lastPage}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={properties.length < 12 || currentPage === lastPage}
         >
           <span className="material-symbols-outlined">arrow_forward_ios</span>
         </button>
