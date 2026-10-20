@@ -74,4 +74,4 @@ B.Tech – Information Technology, Third Year
 
 ## 📌 Note
 
-This project was developed as part of my learning and practical experience in web development. Features and technologies listed should reflect the current implementation of the project.
+This project was developed as part of my learning (i.e. MERN)and practical experience in web development. Features and technologies listed should reflect the current implementation of the project.
