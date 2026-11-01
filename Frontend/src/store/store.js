@@ -5,7 +5,8 @@ import propertyDetailsSlice from './PropertyDetails/propertyDetails-slice';
 const store = configureStore({
     reducer:{
         properties: propertySlice.reducer,
-        propertydetails:propertyDetailsSlice.reducer
+        propertydetails:propertyDetailsSlice.reducer,
+        user: userSlice.reducer
         
     }
 })

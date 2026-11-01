@@ -1,10 +1,18 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import "../../css/Login.css";
+import {userDispatch,userSelector} from "react-redux";
+import {getSignup} from "../../store/User/user-action";
+import {userActions} from "../../store/User/user-slice";
+
 
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = userDispatch();
+  const {isAuthenticated,error} = userSelector((state)=>state.user);
+
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -22,14 +30,24 @@ const Signup = () => {
       toast.error("Passwords do not match");
       return;
     }
-    // TODO: add your signup logic here. `user` holds the whole form.
+    dispatch(getSignup(user));
     console.log(user);
-    toast.success("User logged in successfully");
-    navigate("/");
+  
   };
   const onChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
+
+  useEffect(()=>{
+    if(error && error.length>0){
+      toast.error(error);
+      dispatch(userActions.clearErrors());
+    }
+    else if(isAuthenticated){
+      navigate("/");
+      toast.success("Registered Successfully");
+    }
+    },[isAuthenticated,error,navigate])
 
   return (
     <Fragment>
