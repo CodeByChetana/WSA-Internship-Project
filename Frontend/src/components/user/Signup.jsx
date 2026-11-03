@@ -2,15 +2,15 @@ import React, { Fragment, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import "../../css/Login.css";
-import {userDispatch,userSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {getSignup} from "../../store/User/user-action";
 import {userActions} from "../../store/User/user-slice";
 
 
 const Signup = () => {
   const navigate = useNavigate();
-  const dispatch = userDispatch();
-  const {isAuthenticated,error} = userSelector((state)=>state.user);
+  const dispatch = useDispatch();
+  const {isAuthenticated,error} = useSelector((state)=>state.user);
 
 
   const [user, setUser] = useState({

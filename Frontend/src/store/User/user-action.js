@@ -1,7 +1,7 @@
 import {userActions} from './user-slice';
 import {axiosInstance} from '../../utils/axios';
 
-export const getSignUp = (user) => async (dispatch) => {
+export const getSignup = (user) => async (dispatch) => {
     try {
         dispatch(userActions.getSignupRequest());
         const {data} = await axiosInstance.post('/v1/rent/user/signup', user);
